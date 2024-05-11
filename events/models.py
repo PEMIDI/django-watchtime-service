@@ -9,7 +9,7 @@ class CustomUser(models.Model):
         return self.username
 
     def total_watch_time(self):
-        total_watch_time = self.objects.all().annotate(total_watch_time=Sum('watch_time'))
+        total_watch_time = self.watch_time.aggregate(Sum('total'))['total__sum']
         return total_watch_time
 
 
@@ -20,17 +20,20 @@ class Movie(models.Model):
     def __str__(self):
         return self.slug
 
+    def total_watch_time(self):
+        total_watch_time = self.watch_time.aggregate(Sum('total'))['total__sum']
+        return total_watch_time
+
 
 class WatchTime(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="watch_time")
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='watch_time')
-    total_watch_time = models.PositiveIntegerField(default=0, editable=False)
+    total = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user} watched movie {self.movie} at {self.total_watch_time}"
+        return f"{self.user} watched movie {self.movie} at {self.total}"
 
     def update_watch_time(self, new_watch_time):
-        self.total_watch_time += new_watch_time
+        self.total += new_watch_time
         self.save()
-        return self.total_watch_time
-
+        return self.total
