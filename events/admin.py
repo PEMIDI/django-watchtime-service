@@ -10,12 +10,17 @@ class WatchTimeInline(admin.TabularInline):
 class MovieAdmin(admin.ModelAdmin):
     inlines = [WatchTimeInline]
 
-
-admin.site.register(Movie, MovieAdmin)
+    list_display = ['title', 'slug', 'total_watch_time']
 
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ['username']
+    list_display = ['username', 'total_watch_time']
+
+
+class WatchTimeAdmin(admin.ModelAdmin):
+    list_display = ['user', 'movie', 'total']
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Movie, MovieAdmin)
+admin.site.register(WatchTime, WatchTimeAdmin)
