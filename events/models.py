@@ -28,6 +28,7 @@ class Movie(models.Model):
 class WatchTime(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="watch_time")
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='watch_time')
+    last_moment = models.PositiveIntegerField(default=0)
     total = models.PositiveIntegerField(default=0)
 
     def __str__(self):
