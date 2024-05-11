@@ -10,7 +10,7 @@ class WatchTimeInline(admin.TabularInline):
 class MovieAdmin(admin.ModelAdmin):
     inlines = [WatchTimeInline]
 
-    list_display = ['title', 'slug', 'total_watch_time']
+    list_display = ['id', 'title', 'slug', 'total_watch_time']
 
 
 class CustomUserAdmin(admin.ModelAdmin):
