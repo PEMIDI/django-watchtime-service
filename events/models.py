@@ -8,6 +8,7 @@ class CustomUser(models.Model):
     def __str__(self):
         return self.username
 
+    @property
     def total_watch_time(self):
         total_watch_time = self.watch_time.aggregate(Sum('total'))['total__sum']
         return total_watch_time
@@ -20,6 +21,7 @@ class Movie(models.Model):
     def __str__(self):
         return self.slug
 
+    @property
     def total_watch_time(self):
         total_watch_time = self.watch_time.aggregate(Sum('total'))['total__sum']
         return total_watch_time
@@ -36,5 +38,7 @@ class WatchTime(models.Model):
 
     def update_watch_time(self, new_watch_time):
         self.total += new_watch_time
+        if new_watch_time > self.last_moment:
+            self.last_moment = new_watch_time
         self.save()
         return self.total
