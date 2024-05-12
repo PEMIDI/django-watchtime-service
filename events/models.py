@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Sum
 
 
@@ -42,3 +42,22 @@ class WatchTime(models.Model):
             self.last_moment = new_watch_time
         self.save()
         return self.total
+
+    @classmethod
+    def save_watch_time_from_broker(cls, data):
+        try:
+            with transaction.atomic():
+                username = data.get('user')
+                movie_slug = data.get('slug')
+                new_watch_time = data.get('at')
+
+                user, created = CustomUser.objects.get_or_create(username=username)
+                movie, created = Movie.objects.get_or_create(slug=movie_slug)
+
+                watch_time, status = WatchTime.objects.update_or_create(user=user, movie=movie)
+
+                watch_time.update_watch_time(new_watch_time)
+                watch_time.save()
+            return True
+        except (Exception,):
+            return False
