@@ -1,3 +1,4 @@
+import json
 import logging
 
 from rest_framework import status, generics
@@ -13,7 +14,7 @@ class EventAPI(APIView):
 
     def post(self, request):
         logging.info(msg=f"received data from request: {request.data}")
-        rabbitmq_client.publish(request.data)
+        rabbitmq_client.publish(json.dumps(request.data))
 
         return Response("ok", status=status.HTTP_200_OK)
 
