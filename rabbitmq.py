@@ -1,6 +1,9 @@
-import logging
+import json
+
 
 import pika
+
+from events.models import WatchTime
 
 
 class RabbitMQClient:
@@ -20,7 +23,24 @@ class RabbitMQClient:
 
     def consume(self):
         def callback(ch, method, properties, body):
-            logging.log(f"Received message from {self.queue_name}: {body}")
+            print(f"Received message from {self.queue_name}: {body}")
+
+        self.channel.basic_consume(queue=self.queue_name,
+                                   on_message_callback=callback,
+                                   auto_ack=True)
+        print(f"Starting consumer for {self.queue_name}...")
+        self.channel.start_consuming()
+
+    def consume_and_save(self):
+        def callback(ch, method, properties, body):
+            decoded_body = body.decode('utf-8')
+            data = json.loads(decoded_body)
+            watch_time_saved: bool = WatchTime.save_watch_time_from_broker(data)
+
+            if watch_time_saved:
+                print('saved watch time')
+            else:
+                print("watch time has error")
 
         self.channel.basic_consume(queue=self.queue_name,
                                    on_message_callback=callback,
