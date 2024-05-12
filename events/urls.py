@@ -14,5 +14,9 @@ urlpatterns = [
     path('users/<str:username>/total-watch-time/', views.UserTotalWatchTimeAPI.as_view(), name='user-watch-time'),
 
     # URL pattern for retrieving the total watch time of a movie 🎥
-    path('movies/<int:pk>/total-watch-time/', views.MovieTotalWatchTimeAPI.as_view(), name='movie-watch-time')
+    path('movies/<int:pk>/total-watch-time/', views.MovieTotalWatchTimeAPI.as_view(), name='movie-watch-time'),
+
+    # URL pattern for retrieving the total watch time of a movie for specific user 👥🎥
+    path('<str:username>/<int:movie_pk>/total-watch-time/', views.UserMovieWatchTimeAPI.as_view(),
+         name='user-movie-watch-time')
 ]
