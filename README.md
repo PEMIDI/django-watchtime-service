@@ -1,9 +1,15 @@
 
 
 **Django Watch Time Service 🎥📺**
+
+
+
 ================
 
 **Overview 📚👀**
+
+![img.png](img.png)
+
 ------------
 
 The Service is a Django-based service that tracks and manages events, including user watch times and movie metadata 🎬. The project provides a RESTful API for retrieving and manipulating event data 💻.
