@@ -55,6 +55,11 @@ class WatchTime(models.Model):
         """Return a string representation of the watch time"""
         return f"{self.user} watched movie {self.movie} at {self.total}"
 
+    @property
+    def get_total_watch_time_per_user_movie(self):
+        """Get the total watch time for this user and movie ⏰"""
+        return self.total
+
     def update_watch_time(self, new_watch_time):
         """Update the watch time for this instance ⏱️"""
         self.total += new_watch_time
