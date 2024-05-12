@@ -1,10 +1,12 @@
 from django.db import models, transaction
 from django.db.models import Sum
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(models.Model):
     """Custom user model 👨‍💻"""
-    username = models.CharField(max_length=100, unique=True)  # 👤
+    username = models.CharField(max_length=100, unique=True, verbose_name=_('Username'), help_text=_(
+        'Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only.'))  # 👤
 
     def __str__(self):
         """Return the username as a string"""
@@ -19,8 +21,10 @@ class CustomUser(models.Model):
 
 class Movie(models.Model):
     """Movie model 🎥"""
-    title = models.CharField(max_length=100, blank=True, null=True)  # 📽
-    slug = models.SlugField(unique=True)  # 🔗
+    title = models.CharField(max_length=100, blank=True, null=True, verbose_name=_('Title'),
+                             help_text=_('Optional. 100 characters or fewer.'))  # 📽
+    slug = models.SlugField(unique=True, verbose_name=_('Slug'),
+                            help_text=_('Required. Unique slug for the movie.'))  # 🔗
 
     def __str__(self):
         """Return the movie slug as a string"""
@@ -35,10 +39,17 @@ class Movie(models.Model):
 
 class WatchTime(models.Model):
     """Watch time model ⏱️"""
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="watch_time")  # 👥
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='watch_time')  # 🎬
-    last_moment = models.PositiveIntegerField(default=0)  # ⏱️
-    total = models.PositiveIntegerField(default=0)  # 📊
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="watch_time", verbose_name=_('User'),
+                             help_text=_('Required. The user who watched the movie.'))  # 👥
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='watch_time', verbose_name=_('Movie'),
+                              help_text=_('Required. The movie that was watched.'))  # 🎬
+    last_moment = models.PositiveIntegerField(default=0, verbose_name=_('Last Moment'),
+                                              help_text=_('The last moment the user watched the movie.'))  # ⏱️
+    total = models.PositiveIntegerField(default=0, verbose_name=_('Total Watch Time'),
+                                        help_text=_('The total watch time for the movie.'))  # 📊
+
+    class Meta:
+        unique_together = ('user', 'movie')  # Ensure that each user can only have one watch time for each movie
 
     def __str__(self):
         """Return a string representation of the watch time"""
