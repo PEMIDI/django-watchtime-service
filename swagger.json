@@ -1,0 +1,205 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Snippets API",
+    "description": "Test description",
+    "termsOfService": "https://www.google.com/policies/terms/",
+    "contact": {
+      "email": "contact@snippets.local"
+    },
+    "license": {
+      "name": "BSD License"
+    },
+    "version": "v1"
+  },
+  "host": "127.0.0.1:8000",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "Basic": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    {
+      "Basic": []
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "operationId": "_create",
+        "summary": "📣 Event API: Receive data and publish to RabbitMQ",
+        "description": "This API endpoint receives data from the request and publishes it to RabbitMQ.\n\n**HTTP Method:** POST\n**Request Body:** JSON data\n**Response:** \"ok\" with HTTP 200 OK status",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          ""
+        ]
+      },
+      "parameters": []
+    },
+    "/movies/{id}/total-watch-time/": {
+      "get": {
+        "operationId": "movies_total-watch-time_read",
+        "summary": "🎥 Movie Total Watch Time API: Retrieve total watch time for a movie",
+        "description": "This API endpoint retrieves the total watch time for a movie.\n\n**HTTP Method:** GET\n**Path Parameter:** `pk` (integer)\n**Response:** JSON data with total watch time",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/MovieTotalWatchTime"
+            }
+          }
+        },
+        "tags": [
+          "movies"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this movie.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/users/{username}/total-watch-time/": {
+      "get": {
+        "operationId": "users_total-watch-time_read",
+        "summary": "🕒️ User Total Watch Time API: Retrieve total watch time for a user",
+        "description": "This API endpoint retrieves the total watch time for a user.\n\n**HTTP Method:** GET\n**Path Parameter:** `username` (string)\n**Response:** JSON data with total watch time",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserTotalWatchTime"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "username",
+          "in": "path",
+          "description": "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only.",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/{username}/{movie_pk}/total-watch-time/": {
+      "get": {
+        "operationId": "total-watch-time_read",
+        "summary": "👥 User Movie Watch Time API: Retrieve watch time for a user and movie",
+        "description": "This API endpoint retrieves the watch time for a user and a movie.\n\n**HTTP Method:** GET\n**Path Parameters:** `username` (string), `pk` (integer)\n**Response:** JSON data with watch time",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserMovieTotalWatchTime"
+            }
+          }
+        },
+        "tags": [
+          "total-watch-time"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "username",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "movie_pk",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "MovieTotalWatchTime": {
+      "required": [
+        "slug"
+      ],
+      "type": "object",
+      "properties": {
+        "title": {
+          "title": "Title",
+          "description": "Optional. 100 characters or fewer.",
+          "type": "string",
+          "maxLength": 100,
+          "x-nullable": true
+        },
+        "slug": {
+          "title": "Slug",
+          "description": "Required. Unique slug for the movie.",
+          "type": "string",
+          "format": "slug",
+          "pattern": "^[-a-zA-Z0-9_]+$",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "total_watch_time": {
+          "title": "Total watch time",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "UserTotalWatchTime": {
+      "required": [
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "username": {
+          "title": "Username",
+          "description": "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only.",
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "total_watch_time": {
+          "title": "Total watch time",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "UserMovieTotalWatchTime": {
+      "type": "object",
+      "properties": {
+        "get_total_watch_time_per_user_movie": {
+          "title": "Get total watch time per user movie",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}
